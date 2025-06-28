@@ -129,7 +129,7 @@ const [formData, setFormData] = useState({
     <div style={{background:'linear-gradient(to right top, #6ba0f6, #0c52bb)'}}>
     <div className="container-fluid pt-4">
       <div className="d-flex float-end">
-        {userRole === 'admin' &&<div><button className={`btn btn-success form-control mx-3 `} onClick={() => handleOpenModal(true)}>Add Product</button></div>}
+        <div><button className={`btn btn-success form-control mx-3 `} onClick={() => handleOpenModal(true)}>Add Product</button></div>
       </div>
 
       <div className="d-flex mb-3 gap-3">
