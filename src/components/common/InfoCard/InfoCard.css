@@ -1,0 +1,32 @@
+.info-card {
+  color: white;
+  padding: 16px 28px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 9999;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background-color: #182c60 !important;
+}
+.infocard-title{
+  color: yellow;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+}

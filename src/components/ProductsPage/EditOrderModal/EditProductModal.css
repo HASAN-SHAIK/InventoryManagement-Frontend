@@ -1,0 +1,31 @@
+.product-form-label{
+    font-weight: bolder;
+    font-size: larger;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: rgb(34, 112, 255);
+}
+
+.product-form-input{
+    width: 400px !important;
+    border: 2px rgb(110, 110, 167);
+    border-radius: 10%;
+    text-align: center;
+    font-size: larger;
+    background-color: aliceblue;
+    padding: 1%;
+}
+
+.edit-product-modal{
+    /* position: fixed; */
+    overflow: scroll;
+    top: 100px !important;
+    left: 25% !important;
+    width: 50% !important;
+    min-height: 80% !important;
+    background:linear-gradient(rgb(216, 216, 245),rgb(234, 220, 220), rgb(243, 243, 199),rgb(194, 234, 194),rgb(255, 238, 207), rgb(249, 196, 249));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+    /* border-radius: 10px 10px 10px 10px !important; */
+}

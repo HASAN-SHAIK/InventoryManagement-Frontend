@@ -1,0 +1,45 @@
+.dashboard {
+    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+  }
+  
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    transform: skew(-10deg);
+  }
+  
+  .top-bar button {
+    background-color: #17a2b8;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-weight: 500;
+  }
+  
+  .top-bar button:hover {
+    background-color: #138496;
+    transform: scale(1.05);
+  }
+  
+  .stat-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }

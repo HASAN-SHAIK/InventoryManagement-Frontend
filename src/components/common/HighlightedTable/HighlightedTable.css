@@ -1,0 +1,20 @@
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #182c60;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: linear-gradient(to right top, #6ba0f6, #0c52bb);
+  }
+
+
+  .transactions-page .table td{
+    background-color: #182c60 !important;
+    color: white !important;
+
+  }
+  .transactions-page .table th{
+    background-color: #182c60 !important;
+    color: #14fde9;
+  }

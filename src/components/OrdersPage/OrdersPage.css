@@ -1,0 +1,91 @@
+  @media (max-width: 768px) {
+      table {
+        font-size: 12px;
+      }
+    }
+
+
+  .container-fluid {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .orderspage .table th{
+    vertical-align: middle !important;
+    background-color: #182c60 !important;
+    color: aqua;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: larger;
+  }
+  .orderspage .table td {
+    background-color: #182c60 !important;
+    color: white;
+  }
+
+  .btn-info, .btn-outline-success, .btn-danger, .btn-primary {
+    transition: all 0.3s ease;
+  }
+
+  .btn-info:hover {
+    background-color: #17a2b8;
+    color: #fff;
+  }
+
+  .btn-outline-success:hover {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+  }
+
+  .btn-danger:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .status-completed {
+    color: #28a745;
+    font-weight: bold;
+  }
+
+  .status-pending {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
+  input[type="text"], select.form-select {
+    border: 2px solid #d3e0ea;
+    border-radius: 8px;
+  }
+
+  input[type="text"]:focus, select.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  }
+
+  /* Modal image styling */
+  .modal-body img {
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: auto;
+  }
+
+  /* Spinner Centering */
+  .spinner-container {
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .orders-table{
+  background-color: #182c60 !important;
+  }
+
+  .orderspage th {
+    background-color: #007bff;
+  }

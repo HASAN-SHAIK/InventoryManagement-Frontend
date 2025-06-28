@@ -1,0 +1,52 @@
+.custom-navbar {
+    /* background: linear-gradient(to right, #71abe6,#83c1ff, #decef7 ); */
+    background:  #182c60;
+    padding: 0.75rem 1.5rem;
+    /* border-radius: 0 0 10px 10px; */
+    margin: 0px !important;
+    max-height: 70px;
+    position: sticky top;
+    transition: none;
+  }
+  .custom-navbar:hover{
+    transition: background-color 0.3s ease;
+  }
+  .custom-navbar .nav-link {
+    margin-left: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-navbar .nav-link:hover {
+    color: #ffc107 !important;
+    transform: scale(1.10);
+  }
+  
+  .newOrderBtn {
+    background: linear-gradient(to right, #66a8ee, #ac79ff,  #94e6ff);
+    border: none;
+    border-radius: 6px;
+    color: rgb(0, 0, 0);
+    /* padding: 5px 15px; */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    /* font-size: 20px; */
+  }
+  .newOrderBtn:hover {
+    background: linear-gradient(to right, #0071e9, #5b00ee, #00baf3);
+    transition:  .3s !important;
+    /* transform: scale(1.1); */
+    color: white !important;
+    font-size: larger;
+  }
+  
+
+  /* #newOrderBtn:hover {
+    background-color: #ffca2c;
+    transform: scale(1.05);
+  } */
+  .companyName{
+    /* background-color: teal; */
+    color: white !important;
+  }

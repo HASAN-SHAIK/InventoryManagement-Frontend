@@ -1,0 +1,94 @@
+.table-box {
+    margin-bottom: 20px;
+    background-color: #182c60;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    padding: 15px;
+    flex: 1;
+    min-width: 40%;
+    color: white;
+    /* z-index: 5; */
+    /* max-width: 30%; */
+  }
+  .responsive-table{
+    position: relative;
+    z-index: 0
+  }
+  
+  .table-box h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+  
+  .table-box table {
+    width: 100%;
+    border-collapse: collapse;
+    z-index: 5;
+  }
+  
+  .table-box th,
+  .table-box td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+    z-index: 10 !important;
+    position: relative;
+  }
+  .table-box tr{
+    z-index: 5 !important;
+  }
+  
+  .table-box th {
+    /* background-color: #f8f9fa; */
+    color: #14fde9;
+  }
+  
+  .table-box tr:hover {
+    background-color: #162bcb;
+    transition: 0.2s;
+  }
+  
+  .tables-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .summary-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+    
+  .tablecircle{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #846bff, #c44582);
+  top: 50%;
+  left: 75%;
+  z-index: 0 !important;    
+  animation: floatXY 6s ease-in-out infinite; 
+  }
+
+  .tablering {
+  width: 40px;
+  height: 40px;
+  border: 6px solid rgb(200, 0, 255);
+  border-radius: 50%;
+  top: 10%;
+  left: 5%;
+  z-index: 0 !important;
+  animation: spinFloat 5s ease-in-out infinite;
+}
+
+.tablecube {
+  width: 25px;
+  height: 25px;
+  background: #93e62d;
+  top: 70%;
+  left: 25%;
+  animation: floatXY 7s ease-in-out infinite;
+}
