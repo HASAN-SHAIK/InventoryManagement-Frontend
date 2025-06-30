@@ -79,7 +79,7 @@ function App() {
           }
         />
         <Route
-          path="/new-order"
+          path="/neworder"
           element={
             <ProtectedRoute>
               <CreateOrderPage userDetails={userDetails} navigate={navigate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} user_name = {userDetails && userDetails.user_name} user_id ={userDetails && userDetails.id}/>
