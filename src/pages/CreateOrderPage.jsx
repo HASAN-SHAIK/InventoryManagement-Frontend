@@ -1,38 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/axios';
-import {  useNavigate } from 'react-router-dom';
-import InfoCard from '../components/common/InfoCard/InfoCard';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import PopUp from '../components/common/PopUp/PopUp';
 
-const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isModalOpen}) => {
+const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate }) => {
   const [categories, setCategories] = useState([]);
-  const [saleMethods, setSaleMethods] = useState(['sale', 'purchase','personal']);
-  const userDetailsFromStorage = JSON.parse(localStorage.getItem('userDetails'));
-  useEffect(()=>{
-    try{
-    const getCategories = async () => {
-      const res = await api.get('/orders/getcategories');
-      setCategories(res.data);
-    }
-    if(userDetailsFromStorage && userDetailsFromStorage.role !== 'admin')
-      setSaleMethods(saleMethods.filter((method)=>{
-      if(method !== 'personal')
-        return method;    
-    }))
-    getCategories();
-    }
-    catch(err){
-     if(err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403)){
-      alert("Token Expired Please Login Again!");
-      navigate('/login');
+  const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
+
+  const { user_name, id, role } = userDetails;
+
+  useEffect(() => {
+    try {
+      const getCategories = async () => {
+        const res = await api.get('/orders/getcategories');
+        setCategories(res.data);
+      };
+      if (role !== 'admin') {
+        setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
       }
-      else{
+      getCategories();
+    } catch (err) {
+      if (err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403)) {
+        alert("Token Expired Please Login Again!");
+        navigate('/login');
+      } else {
         console.log(err);
       }
     }
-  },[]);
-  const navigate =  useNavigate();
+  }, []);
+
   const [transactionType, setTransactionType] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [products, setProducts] = useState([]);
@@ -56,7 +52,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
       setProducts([...products, { product_name: '', id: null, quantity: '', suggestions: [] }]);
     } else if (transactionType === 'purchase') {
       setProducts([...products, {
-        product_name: '', company: '', quantity: '', actual_price: '', selling_price: '', category:'', time_for_delivery: ''
+        product_name: '', company: '', quantity: '', actual_price: '', selling_price: '', category: '', time_for_delivery: ''
       }]);
     }
   };
@@ -75,12 +71,11 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
       const updated = [...products];
       updated[index].suggestions = response.data.products;
       setProducts(updated);
-    } catch(err){
-     if((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
-      alert("Token Expired Please Login Again!");
-      navigate('/login');
-      }
-      else{
+    } catch (err) {
+      if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
+        alert("Token Expired Please Login Again!");
+        navigate('/login');
+      } else {
         console.log(err);
       }
     }
@@ -98,6 +93,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
     setProducts(updated);
     calculateTotal(updated);
   };
+
   const handleQuantityChange = (value, index) => {
     const updated = [...products];
     updated[index].quantity = value;
@@ -140,7 +136,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
       for (const p of products) {
         if (!p.product_name || !p.company || !p.quantity || !p.actual_price || !p.selling_price || !p.category || !p.time_for_delivery)
           return alert('Fill all product details');
-        if(p.selling_price < p.actual_price)
+        if (p.selling_price < p.actual_price)
           return alert('Actual Price is Less than Selling price');
       }
     } else if (transactionType === 'personal' && !personalAmount) {
@@ -149,10 +145,9 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
 
     const payload = {
       transaction_type: transactionType,
-      user_id: userDetailsFromStorage.id || user_id,
-      total_amount: totalAmount,
-      payment_method: paymentMethod,
+      user_id: id,
       total_amount: transactionType === 'personal' ? parseFloat(personalAmount) : totalAmount,
+      payment_method: paymentMethod,
       products: products.map(p => {
         if (transactionType === 'sale') return { product_id: p.id, quantity: p.quantity };
         if (transactionType === 'purchase') return { ...p };
@@ -161,65 +156,45 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
     };
 
     try {
-      const res = await api.post('/orders', payload);
-    //   <InfoCard message={"Order Placed!!"} />
-        alert('Order Placed!!')
-        // setMessage('Order Placed!!!!');
-        // setTitle('Message')
-        // setIsModalOpen(true)
-        // setTimeout(()=>{
-          navigate('/orders')
-        // }, 1000).then(()=>{
-        // setIsModalOpen(false);
-        // })
-
-    } catch(err){
-     if((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
-      alert("Token Expired Please Login Again!");
-      navigate('/login');
-      }
-      else{
-        alert("Please Enter valid Products/Details!")
+      await api.post('/orders', payload);
+      alert('Order Placed!!');
+      navigate('/orders');
+    } catch (err) {
+      if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
+        alert("Token Expired Please Login Again!");
+        navigate('/login');
+      } else {
+        alert("Please Enter valid Products/Details!");
         console.log(err);
       }
-      // if(!err.response.data.error){
-      //   setIsModalOpen(true);
-        
-      }
-    //   else
-    //   // alert(err.response.data.error);
-    //   setIsModalOpen(true);
-    //   console.error(err.response.data.error);
-    // }
+    }
   };
+
   return (
     <div className="container mt-4 p-5 v-100">
       <h3 className='display-5 text-center'>Create New Transaction</h3>
-      <div className="mb-3">
-        {/* <label className="form-label">Transaction Type:</label> */}
-        <PopUp
+      <PopUp
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={title}
         message={message}
-        />
-        <div>
-          {saleMethods && saleMethods.map(type => (
-            <label key={type} className="me-3">
-              <input
-                type="radio"
-                value={type}
-                checked={transactionType === type}
-                onChange={handleTransactionTypeChange}
-              /> {type}
-            </label>
-          ))}
-        </div>
+      />
+      <div className="mb-3">
+        {saleMethods && saleMethods.map(type => (
+          <label key={type} className="me-3">
+            <input
+              type="radio"
+              value={type}
+              checked={transactionType === type}
+              onChange={handleTransactionTypeChange}
+            /> {type}
+          </label>
+        ))}
       </div>
 
       <div className="mb-3">
         <label>User Name:</label>
-        <input className="form-control" value={userDetailsFromStorage.user_name} disabled />
+        <input className="form-control" value={user_name} disabled />
       </div>
 
       {(transactionType === 'sale' || transactionType === 'personal' || transactionType === 'purchase') && (
@@ -239,6 +214,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
           </div>
         </div>
       )}
+
       {transactionType === 'sale' && products.map((p, index) => (
         <div className="row mb-2" key={index}>
           <div className="col-md-4">
@@ -253,21 +229,20 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
                 handleSaleProductSearch(e.target.value, index);
               }}
             />
-            { p.suggestions?.length > 0 && (
+            {p.suggestions?.length > 0 && (
               <ul className="list-group">
                 {p.suggestions.map((s, i) => (
-                    s.stock_quantity > 0 ?
-                  <li
-                    key={i}
-                    className="list-group-item list-group-item-action"
-                    onClick={() => handleSaleProductSelect(s, index)}
-                  >
-                    {s.name + " - " + s.company + '(Rs. ' + s.selling_price +')'}
-                  </li>
-                  : <li className="list-group-item list-group-item-action text-danger" disabled>
-                    {s.name  + '(Out Of Stock)'}
-                  </li>
-                    
+                  s.stock_quantity > 0 ?
+                    <li
+                      key={i}
+                      className="list-group-item list-group-item-action"
+                      onClick={() => handleSaleProductSelect(s, index)}
+                    >
+                      {s.name + " - " + s.company + '(Rs. ' + s.selling_price + ')'}
+                    </li>
+                    : <li className="list-group-item list-group-item-action text-danger" disabled>
+                      {s.name + '(Out Of Stock)'}
+                    </li>
                 ))}
               </ul>
             )}
@@ -292,31 +267,30 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
         <div className="row mb-2" key={index}>
           {['product_name', 'company', 'quantity', 'actual_price', 'selling_price', 'category', 'time_for_delivery'].map((field) => (
             <div className="col" key={field}>
-              
-              {field === 'category'?
-              <>
-              <input 
-              list='categories-list'
-              className='form-control' 
-              id='category'
-              name='category'
-              onChange={(e) => handlePurchaseFieldChange(e.target.value, index, 'category')}
-              />
-              <datalist id='categories-list'>
-                {
-                  categories.data.map((cat, idx)=>{
-                    return <option index={idx} value={cat.category}/>
-                  })
-                }
-              </datalist>
-              </>
-               :
-              <input
-                className="form-control"
-                placeholder={field.replace(/_/g, ' ')}
-                value={p[field]}
-                onChange={(e) => handlePurchaseFieldChange(e.target.value, index, field)}
-              />}
+              {field === 'category' ?
+                <>
+                  <input
+                    list='categories-list'
+                    className='form-control'
+                    id='category'
+                    name='category'
+                    onChange={(e) => handlePurchaseFieldChange(e.target.value, index, 'category')}
+                  />
+                  <datalist id='categories-list'>
+                    {
+                      categories.data && categories.data.map((cat, idx) => (
+                        <option key={idx} value={cat.category} />
+                      ))
+                    }
+                  </datalist>
+                </>
+                :
+                <input
+                  className="form-control"
+                  placeholder={field.replace(/_/g, ' ')}
+                  value={p[field]}
+                  onChange={(e) => handlePurchaseFieldChange(e.target.value, index, field)}
+                />}
             </div>
           ))}
           <div className="col-1 d-flex align-items-center">
