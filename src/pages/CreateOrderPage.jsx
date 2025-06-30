@@ -13,9 +13,9 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
         const res = await api.get('/orders/getcategories');
         setCategories(res.data);
       };
-      if (role !== 'admin') {
-        setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
-      }
+      // if (role !== 'admin') {
+      //   setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
+      // }
       getCategories();
     } catch (err) {
       if (err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403)) {
@@ -143,7 +143,7 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
 
     const payload = {
       transaction_type: transactionType,
-      user_id: id,
+      user_id: 1,
       total_amount: transactionType === 'personal' ? parseFloat(personalAmount) : totalAmount,
       payment_method: paymentMethod,
       products: products.map(p => {
@@ -168,8 +168,8 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
     }
   };
   
-  if (!userDetails) return <div className="text-center p-5"><div className="spinner-border"></div></div>;
-  const { user_name, id, role } = userDetails;
+  // if (!userDetails) return <div className="text-center p-5"><div className="spinner-border"></div></div>;
+  // const { user_name, id, role } = userDetails;
 
   return (
     <div className="container mt-4 p-5 v-100">
@@ -195,7 +195,7 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
 
       <div className="mb-3">
         <label>User Name:</label>
-        <input className="form-control" value={user_name} disabled />
+        <input className="form-control" value='sample' disabled />
       </div>
 
       {(transactionType === 'sale' || transactionType === 'personal' || transactionType === 'purchase') && (
