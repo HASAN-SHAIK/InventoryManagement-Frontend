@@ -22,7 +22,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
     getCategories();
     }
     catch(err){
-     if(err.response && (err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
+     if(err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403)){
       alert("Token Expired Please Login Again!");
       navigate('/login');
       }
