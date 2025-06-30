@@ -8,13 +8,14 @@ import PopUp from '../components/common/PopUp/PopUp';
 const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isModalOpen}) => {
   const [categories, setCategories] = useState([]);
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase','personal']);
+  const userDetailsFromStorage = JSON.parse(localStorage.getItem('userDetails'));
   useEffect(()=>{
     try{
     const getCategories = async () => {
       const res = await api.get('/orders/getcategories');
       setCategories(res.data);
     }
-    if(userDetails.role !== 'admin')
+    if(userDetailsFromStorage && userDetailsFromStorage.role !== 'admin')
       setSaleMethods(saleMethods.filter((method)=>{
       if(method !== 'personal')
         return method;    
@@ -148,7 +149,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
 
     const payload = {
       transaction_type: transactionType,
-      user_id: user_id,
+      user_id: userDetailsFromStorage.id || user_id,
       total_amount: totalAmount,
       payment_method: paymentMethod,
       total_amount: transactionType === 'personal' ? parseFloat(personalAmount) : totalAmount,
@@ -218,7 +219,7 @@ const CreateOrderPage = ({ userDetails,user_name , user_id, setIsModalOpen, isMo
 
       <div className="mb-3">
         <label>User Name:</label>
-        <input className="form-control" value={user_name} disabled />
+        <input className="form-control" value={userDetailsFromStorage.user_name} disabled />
       </div>
 
       {(transactionType === 'sale' || transactionType === 'personal' || transactionType === 'purchase') && (

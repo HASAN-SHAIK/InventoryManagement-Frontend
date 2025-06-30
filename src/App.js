@@ -35,6 +35,7 @@ function App() {
     const fetchUserRole = async () => {
       const getUserDetails = await getUserRole();
       setUserDetails(getUserDetails);
+      localStorage.setItem('userDetails', JSON.stringify(getUserDetails));
       setShowNavbar(true);
     }
     if(userDetails == null && !authPages.includes(location))

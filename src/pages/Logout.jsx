@@ -13,6 +13,8 @@ const Logout = ({setUserDetails, setShowNavbar}) => {
     setShowNavbar(false);
     // Optionally clear localStorage or sessionStorage
     localStorage.removeItem('user');
+    localStorage.removeItem('userDetails');
+  
 
     // Navigate to login
     navigate('/login');
