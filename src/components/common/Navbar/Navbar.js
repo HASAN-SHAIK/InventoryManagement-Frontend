@@ -35,7 +35,7 @@ const Navbar = ({user_name}) => {
     <div className=' navbar-style'>
         <div className="custom-navbar d-flex justify-content-between align-items-center sticky-top">
             <h4 className="companyName"><button onClick={() => navigateTo('/dashboard')} className='m-1 btn companyName fs-3 btn-block'><i class="bi bi-motherboard fs-3 m-1"></i>Hasan Inventory</button></h4>
-             <button className="btn newOrderBtn fw-bold" onClick={() => navigateTo('/new-order')}>
+             <button className="btn newOrderBtn fw-bold" onClick={() => navigateTo('/neworder')}>
                {/* <i class="bi bi-mailbox fs-4 p-1  text-success"></i> */}
                <span className='fs-5'>New Order</span>
            </button>
