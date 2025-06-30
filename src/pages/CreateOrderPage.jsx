@@ -7,8 +7,6 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
   const [categories, setCategories] = useState([]);
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
 
-  const { user_name, id, role } = userDetails;
-
   useEffect(() => {
     try {
       const getCategories = async () => {
@@ -169,6 +167,9 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
       }
     }
   };
+  
+  if (!userDetails) return <div className="text-center p-5"><div className="spinner-border"></div></div>;
+  const { user_name, id, role } = userDetails;
 
   return (
     <div className="container mt-4 p-5 v-100">
