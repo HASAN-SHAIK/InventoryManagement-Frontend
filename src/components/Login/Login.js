@@ -62,7 +62,7 @@ const Login = ({ setShowNavbar }) => {
             style={{zIndex: '1000 !important'}}
           />
          <div className="floating-shape loginring orange"></div>
-          <button style={{zIndex: 1000}} type="submit" className='letsgo'>{ isLoading ? <div class="spinner-border text-primary" role="status"></div> : `Let's Go`}</button>
+          <button style={{zIndex: 1000}} type="submit" className='letsgo'>{ isLoading ? <div class="spinner-border text-light" role="status"></div> : `Let's Go`}</button>
         </form>
       </div>
 
