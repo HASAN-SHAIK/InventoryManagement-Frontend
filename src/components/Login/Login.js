@@ -6,6 +6,7 @@ import api from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setShowNavbar }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -15,14 +16,17 @@ const Login = ({ setShowNavbar }) => {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     setError('');
 
     try {
       await api.post('/auth/login', form); // Set-Cookie works if backend handles it
       setShowNavbar(true);
+      setIsLoading(false);
       navigate('/dashboard');
     } catch (err) {
+      setIsLoading(false);
       setError(err.response?.data?.message || 'Login failed');
     }
   };
@@ -58,7 +62,7 @@ const Login = ({ setShowNavbar }) => {
             style={{zIndex: '1000 !important'}}
           />
          <div className="floating-shape loginring orange"></div>
-          <button style={{zIndex: 1000}} type="submit" className='letsgo'>Let's Go</button>
+          <button style={{zIndex: 1000}} type="submit" className='letsgo'>{ isLoading ? <div class="spinner-border text-primary" role="status"></div> : `Let's Go`}</button>
         </form>
       </div>
 
