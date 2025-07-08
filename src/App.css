@@ -5,6 +5,7 @@
 }
 body{
   background: linear-gradient(to right top, #6ba0f6, #0c52bb) !important;
+  min-height: 100vh;
 }
 .container-fluid {
   background: linear-gradient(to right top, #6ba0f6, #0c52bb);
