@@ -2,20 +2,22 @@ import React, { useEffect, useState } from 'react';
 import api from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import PopUp from '../components/common/PopUp/PopUp';
+import { useSelector } from 'react-redux';
 
-const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate }) => {
+const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
   const [categories, setCategories] = useState([]);
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
-
+  const userDetails = useSelector((state) => state.user.userDetails);
+  
   useEffect(() => {
     try {
       const getCategories = async () => {
         const res = await api.get('/orders/getcategories');
         setCategories(res.data);
       };
-      // if (role !== 'admin') {
-      //   setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
-      // }
+      if (userDetails.role !== 'admin') {
+        setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
+      }
       getCategories();
     } catch (err) {
       if (err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403)) {
@@ -143,7 +145,7 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
 
     const payload = {
       transaction_type: transactionType,
-      user_id: 1,
+      user_id: userDetails.id,
       total_amount: transactionType === 'personal' ? parseFloat(personalAmount) : totalAmount,
       payment_method: paymentMethod,
       products: products.map(p => {
@@ -195,7 +197,7 @@ const CreateOrderPage = ({ userDetails, setIsModalOpen, isModalOpen, navigate })
 
       <div className="mb-3">
         <label>User Name:</label>
-        <input className="form-control" value='sample' disabled />
+        <input className="form-control" value={userDetails.name} disabled />
       </div>
 
       {(transactionType === 'sale' || transactionType === 'personal' || transactionType === 'purchase') && (

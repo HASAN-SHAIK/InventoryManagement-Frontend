@@ -18,32 +18,32 @@ function App() {
   const authPages = ['/', '/login', '/register', '/logout'];
   const [showNavbar, setShowNavbar] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const routeLocation = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const getUserDetails = await getUserRole();
-        setUserDetails(getUserDetails);
-        setShowNavbar(true);
-      } catch (err) {
-        console.error('Error fetching user role', err);
-        navigate('/login');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserRole = async () => {
+  //     try {
+  //       const getUserDetails = getUserRole();
+  //       setUserDetails(getUserDetails);
+  //       setShowNavbar(true);
+  //     } catch (err) {
+  //       console.error('Error fetching user role', err);
+  //       navigate('/login');
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    if (authPages.includes(location)) {
-      setShowNavbar(false);
-      setIsLoading(false);
-    } else {
-      fetchUserRole();
-    }
-  }, [routeLocation]);
+  //   if (authPages.includes(location)) {
+  //     setShowNavbar(false);
+  //     setIsLoading(false);
+  //   } else {
+  //     fetchUserRole();
+  //   }
+  // }, [routeLocation, showNavbar]);
 
   if (isLoading) {
     return (
@@ -55,7 +55,7 @@ function App() {
 
   return (
     <>
-      {showNavbar && <div className='sticky-top'><Navbar user_name={userDetails && userDetails.user_name} /></div>}
+      {showNavbar && <div className='sticky-top'><Navbar setShowNavbar={setShowNavbar} user_name={userDetails && userDetails.user_name} /></div>}
       <Routes>
         <Route
           path="/dashboard"
@@ -95,18 +95,18 @@ function App() {
           path="/neworder"
           element={
             <ProtectedRoute>
-              <CreateOrderPage userDetails={userDetails} navigate={navigate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+              <CreateOrderPage navigate={navigate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path='/logout'
           element={
             <ProtectedRoute>
-              <Logout setUserDetails={setUserDetails} setShowNavbar={setShowNavbar} />
+              <Logout  setShowNavbar={setShowNavbar} />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route path='*' element={<LoginPage navigate={navigate} setShowNavbar={setShowNavbar} />} />
       </Routes>
     </>

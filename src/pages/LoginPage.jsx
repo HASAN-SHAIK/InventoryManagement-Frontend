@@ -3,7 +3,7 @@ import api from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import Login from '../components/Login/Login';
 
-const LoginPage = ({setShowNavbar}) => {
+const LoginPage = ({ setShowNavbar}) => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');

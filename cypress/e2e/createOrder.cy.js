@@ -7,7 +7,7 @@ describe('Create Order Page Functionalities', () => {
     cy.get('input[type="email"]').type('admin@example.com');
     cy.get('input[type="password"]').type('admin');
     cy.get('button').contains(`Let's Go`).click();
-    cy.wait(5000); // Wait for the login to complete
+    cy.wait(10000); // Wait for the login to complete
     cy.url().should('include', '/dashboard');
     cy.contains('New Order').click();
   });
