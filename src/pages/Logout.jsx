@@ -1,19 +1,17 @@
 // src/pages/Logout.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { clearUserDetails } from '../store/userSlice';
 import Cookies from 'js-cookie';
+import api from '../utils/axios';
 
 const Logout = ({setUserDetails, setShowNavbar}) => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    // Remove auth token cookie
-    Cookies.remove('token');
-    setUserDetails(null);
+
     setShowNavbar(false);
-    // Optionally clear localStorage or sessionStorage
-    localStorage.removeItem('user');
-    localStorage.removeItem('userDetails');
   
 
     // Navigate to login

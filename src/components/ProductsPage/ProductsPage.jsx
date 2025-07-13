@@ -126,15 +126,14 @@ const [formData, setFormData] = useState({
       <div class="text-center spinner-border" role="status"></div> 
       </div>
      :
-    <div style={{background:'linear-gradient(to right top, #6ba0f6, #0c52bb)'}}>
-    <div className="container-fluid pt-4">
+    <div className="w-90 container-fluid pt-4">
       <div className="d-flex float-end">
-        <div><button className={`btn btn-success form-control mx-3 `} onClick={() => handleOpenModal(true)}>Add Product</button></div>
+        <div><button className={`btn btn-success form-control `} onClick={() => handleOpenModal(true)}>Add Product</button></div>
       </div>
 
       <div className="d-flex mb-3 gap-3">
-        <input className="form-control" placeholder="Search products..." value={searchTerm} onChange={handleSearch} />
-        <select className="form-select" onChange={handleSort}>
+        <input className="w-60 form-control" placeholder="Search Products. . . ." value={searchTerm} onChange={handleSearch} />
+        <select className="form-select w-50 mx-3" onChange={handleSort}>
           <option value="">Sort by</option>
           <option value="name">Name</option>
           <option value="company">Company</option>
@@ -150,7 +149,6 @@ const [formData, setFormData] = useState({
       />
 
         <AddProductModalComponent navigate={navigate} setProductUpdateFlag={setProductUpdateFlag}  modalId="addProductModal" title="Add Product" fields={productFields} formData={formData} onChange={handleChange} onSubmit={handleSubmit} onClose={() => setShowModal(false)} onProductAdded={fetchProducts} />
-    </div>
     </div>
   );
 };

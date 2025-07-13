@@ -4,13 +4,17 @@ import React, { useState } from 'react';
 import './Login.css';
 import api from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../store/userSlice'; // Assuming you have a Redux slice for user details
+import { useSelector } from 'react-redux';
 
 const Login = ({ setShowNavbar }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.user.userDetails);
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -21,7 +25,8 @@ const Login = ({ setShowNavbar }) => {
     setError('');
 
     try {
-      await api.post('/auth/login', form); // Set-Cookie works if backend handles it
+      const res = await api.post('/auth/login', form); // Set-Cookie works if backend handles it
+      dispatch(setUserDetails(res.data.user)); // Dispatch user details to Redux store
       setShowNavbar(true);
       setIsLoading(false);
       navigate('/dashboard');

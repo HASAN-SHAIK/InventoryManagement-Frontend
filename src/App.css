@@ -2,6 +2,7 @@
   text-align: center;
   transition: all 1s;
   background: linear-gradient(to right top, #6ba0f6, #0c52bb) !important;
+  width: 95vw;
 }
 body{
   background: linear-gradient(to right top, #6ba0f6, #0c52bb) !important;
