@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../../store/userSlice'; // Assuming you have a Redux slice for user details
 import { useSelector } from 'react-redux';
 
-const Login = ({ setShowNavbar }) => {
+const Login = ( ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -27,7 +27,6 @@ const Login = ({ setShowNavbar }) => {
     try {
       const res = await api.post('/auth/login', form); // Set-Cookie works if backend handles it
       dispatch(setUserDetails(res.data.user)); // Dispatch user details to Redux store
-      setShowNavbar(true);
       setIsLoading(false);
       navigate('/dashboard');
     } catch (err) {

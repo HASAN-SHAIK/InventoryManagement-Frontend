@@ -3,7 +3,7 @@ import api from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import Login from '../components/Login/Login';
 
-const LoginPage = ({ setShowNavbar}) => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -18,7 +18,6 @@ const LoginPage = ({ setShowNavbar}) => {
 
     try {
       await api.post('/auth/login', form); // cookie is auto-stored
-      setShowNavbar(true);
       navigate('/dashboard'); // redirect on success
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -26,7 +25,7 @@ const LoginPage = ({ setShowNavbar}) => {
   };
 
   return (
-    <Login setShowNavbar={setShowNavbar}/>
+    <Login/>
     // <div className="container mt-5">
     //   <h2>Login</h2>
     //   {error && <div className="alert alert-danger">{error}</div>}

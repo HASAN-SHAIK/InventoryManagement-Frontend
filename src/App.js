@@ -1,61 +1,35 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/common/protectedRoute';
 import { ThemeProvider } from './ThemeContext';
 import Orders from './pages/Orders';
-import { getUserRole } from './utils/auth';
 import Navbar from './components/common/Navbar/Navbar';
-import { useEffect, useState } from 'react';
-import Logout from './pages/Logout';
+import { useState } from 'react';
 import ProductsPage from './components/ProductsPage/ProductsPage';
 import Transactions from './pages/Transactions';
 import CreateOrderPage from './pages/CreateOrderPage';
 import './App.css';
+import { useSelector } from 'react-redux';
 
 function App() {
   const location = window.location.pathname;
   const authPages = ['/', '/login', '/register', '/logout'];
-  const [showNavbar, setShowNavbar] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const userDetails = useSelector((state) => state.user.userDetails);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const routeLocation = useLocation();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchUserRole = async () => {
-  //     try {
-  //       const getUserDetails = getUserRole();
-  //       setUserDetails(getUserDetails);
-  //       setShowNavbar(true);
-  //     } catch (err) {
-  //       console.error('Error fetching user role', err);
-  //       navigate('/login');
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   if (authPages.includes(location)) {
-  //     setShowNavbar(false);
-  //     setIsLoading(false);
-  //   } else {
-  //     fetchUserRole();
-  //   }
-  // }, [routeLocation, showNavbar]);
-
-  if (isLoading) {
-    return (
-      <div className='d-flex justify-content-center align-items-center vh-100'>
-        <div className="spinner-border" role="status"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className='d-flex justify-content-center align-items-center vh-100'>
+  //       <div className="spinner-border" role="status"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
-      {showNavbar && <div className='sticky-top'><Navbar setShowNavbar={setShowNavbar} user_name={userDetails && userDetails.user_name} /></div>}
+      {userDetails && !authPages.includes(location) && <div className='sticky-top'><Navbar user_name={userDetails && userDetails.user_name} /></div>}
       <Routes>
         <Route
           path="/dashboard"
@@ -107,7 +81,7 @@ function App() {
             </ProtectedRoute>
           }
         /> */}
-        <Route path='*' element={<LoginPage navigate={navigate} setShowNavbar={setShowNavbar} />} />
+        <Route path='*' element={userDetails ? <Navigate to="/dashboard" replace />: <LoginPage navigate={navigate}/>} />
       </Routes>
     </>
   );

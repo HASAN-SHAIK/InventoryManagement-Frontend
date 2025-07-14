@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { clearUserDetails } from '../../../store/userSlice';
 
 
-const Navbar = ({setShowNavbar}) => {
+const Navbar = () => {
       const navigate = useNavigate();
       const dispatch = useDispatch();
 
@@ -17,7 +17,6 @@ const Navbar = ({setShowNavbar}) => {
   const logoutUser = async () => {
     try{
       setIsLoading(true);
-      setShowNavbar(false)
       const response = await api.post('/auth/logout');
     }
     catch (error) {

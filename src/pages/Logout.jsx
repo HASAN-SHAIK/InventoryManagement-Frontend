@@ -6,13 +6,11 @@ import { clearUserDetails } from '../store/userSlice';
 import Cookies from 'js-cookie';
 import api from '../utils/axios';
 
-const Logout = ({setUserDetails, setShowNavbar}) => {
+const Logout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
 
-    setShowNavbar(false);
-  
 
     // Navigate to login
     navigate('/login');
