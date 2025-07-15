@@ -11,6 +11,7 @@ import Transactions from './pages/Transactions';
 import CreateOrderPage from './pages/CreateOrderPage';
 import './App.css';
 import { useSelector } from 'react-redux';
+import Logout from './pages/Logout';
 
 function App() {
   const location = window.location.pathname;
@@ -18,14 +19,6 @@ function App() {
   const userDetails = useSelector((state) => state.user.userDetails);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-
-  // if (isLoading) {
-  //   return (
-  //     <div className='d-flex justify-content-center align-items-center vh-100'>
-  //       <div className="spinner-border" role="status"></div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <>
@@ -73,14 +66,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path='/logout'
           element={
             <ProtectedRoute>
-              <Logout  setShowNavbar={setShowNavbar} />
+              <Logout />
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route path='*' element={userDetails ? <Navigate to="/dashboard" replace />: <LoginPage navigate={navigate}/>} />
       </Routes>
     </>

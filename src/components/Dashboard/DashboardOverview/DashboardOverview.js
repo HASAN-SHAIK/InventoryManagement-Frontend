@@ -4,6 +4,7 @@ import TableComponent from "../../common/TableComponent/TableComponent";
 import { useState, useEffect } from "react";
 import "./DashboardOverview.css";
 import api from "../../../utils/axios";
+import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
 
 
 
@@ -77,9 +78,7 @@ const DashboardOverview = ({navigate}) => {
      {/* Navbar */}
     {
          isLoading ?
-         <div className=' mt-5 d-flex justify-content-center align-items-center'>
-         <div class="text-center spinner-border" role="status"></div> 
-         </div>
+         <LoadingSpinner />
         :
     
 <>

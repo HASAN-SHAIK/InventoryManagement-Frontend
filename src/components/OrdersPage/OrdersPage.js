@@ -3,6 +3,7 @@ import api from '../../utils/axios'; // assuming custom axios instance
 import './OrdersPage.css'; // optional custom styles
 import TableComponent from '../common/TableComponent/TableComponent';
 import EditOrderModal from './EditOrderModal/EditOrderModal';
+import LoadingSpinner from '../common/LoadingSpinner/LoadingSpinner';
 const OrdersPage = ({ userRole, navigate }) => {
  const columns = ["OrderId", "Products", "Price", "TotalPrice", "ByUser", "Date", "Edit"]
  const [orders, setOrders] = useState([]);
@@ -38,7 +39,7 @@ const OrdersPage = ({ userRole, navigate }) => {
    } catch (err) {
     if(err.response.data.message === 'Invalid Token' || err.response.status === '400' || err.response.status == '401' || err.response.status === '403'){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
     }
     else{
      console.error("error While getting orders", err);
@@ -78,7 +79,7 @@ const OrdersPage = ({ userRole, navigate }) => {
 catch(err){
   if(err.response.data.message === 'Invalid Token'){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
   }
   else
   alert("Error while processing payment Please Try Again!")
@@ -112,7 +113,7 @@ catch(err){
   catch(err){
   if(err.response.data.message === 'Invalid Token'){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
   }
   else
   alert("Error while processing payment Please Try Again!")
@@ -126,9 +127,9 @@ catch(err){
  return (
   
     isLoading ?
-    <div className='d-flex justify-content-center align-items-center'>
-    <div class="text-center spinner-border" role="status"></div> 
-    </div>
+    <div style={{height: '100vh'}}>
+   <LoadingSpinner/>
+   </div>
     :
     <>
 <div className="container-fluid pt-5 ">

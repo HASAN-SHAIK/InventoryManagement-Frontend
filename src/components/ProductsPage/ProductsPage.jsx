@@ -4,6 +4,7 @@ import TableComponent from '../common/TableComponent/TableComponent';
 import api from '../../utils/axios';
 import { Modal } from 'bootstrap';
 import AddProductModalComponent from './AddModalComponent/AddProductModalComponent';
+import LoadingSpinner from '../common/LoadingSpinner/LoadingSpinner';
 
 const ProductsPage = ({ userRole, navigate }) => {
 //Modal data
@@ -51,18 +52,19 @@ const [formData, setFormData] = useState({
       const modalElement = document.getElementById('addProductModal');
       const modal = Modal.getInstance(modalElement);
       modal.hide();
+      alert("Product added successfully!");
+    setProductUpdateFlag(true)
 
     } catch (err) {
       if(err.response.data.message === 'Invalid Token' || err.response.status === '400' || err.response.status == '401' || err.response.status === '403'){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
       }
       else{
       alert("Issue while adding please try later")
       console.error('Error adding product:', err);
       }
     }
-    setProductUpdateFlag(true).then(()=> alert("Product Added Successfully!"));
     
   };
 
@@ -94,7 +96,7 @@ const [formData, setFormData] = useState({
     catch(err){
      if((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
       }
       else{
         console.log(err);
@@ -122,9 +124,7 @@ const [formData, setFormData] = useState({
   return (
     
       isLoading ? 
-      <div className='p-5 d-flex justify-content-center align-items-center'>
-      <div class="text-center spinner-border" role="status"></div> 
-      </div>
+      <LoadingSpinner />
      :
     <div className="w-90 container-fluid pt-4">
       <div className="d-flex float-end">

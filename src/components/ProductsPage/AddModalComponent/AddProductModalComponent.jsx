@@ -15,7 +15,7 @@ const AddProductModalComponent = ({ modalId, title, fields, formData, onChange, 
     catch(err){
      if((err.response.data && err.response.data.message === 'Invalid Token') || err.response.status === '400' || err.response.status == 401 || err.response.status === 403){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
       }
       else{
         console.log(err);
