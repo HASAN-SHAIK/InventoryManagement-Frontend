@@ -5,23 +5,35 @@ import { useDispatch } from 'react-redux';
 import { clearUserDetails } from '../store/userSlice';
 import Cookies from 'js-cookie';
 import api from '../utils/axios';
+import LoadingSpinner from '../components/common/LoadingSpinner/LoadingSpinner';
 
 const Logout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
 
-
+    const logoutUser = async () => {
+    try{
+      const response = await api.post('/auth/logout');
+      dispatch(clearUserDetails());
+      Cookies.remove('token');
+    }
+    catch (error) {
+      alert('Logout failed. Please try again.');
+       console.error('Logout error:', error);
+    }
+    finally {
+      navigate('/login');
+    }
+  }
+    logoutUser();
     // Navigate to login
-    navigate('/login');
-  }, [navigate]);
+  }, []);
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="text-center">
-        <div className="spinner-border text-primary mb-3" role="status">
-          <span className="visually-hidden">Logging out...</span>
-        </div>
+        <LoadingSpinner />
         <p className="fw-bold text-muted">Logging you out...</p>
       </div>
     </div>

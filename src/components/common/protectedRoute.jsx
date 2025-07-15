@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import api from '../../utils/axios';
+import LoadingSpinner from './LoadingSpinner/LoadingSpinner';
 
 const ProtectedRoute = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
@@ -11,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
       .catch(() => setIsAuth(false));
   }, []);
 
-  if (isAuth === null) return <div>Loading...</div>;
+  if (isAuth === null) return <LoadingSpinner />;
   if (!isAuth) return <Navigate to="/login" />;
   return children;
 };

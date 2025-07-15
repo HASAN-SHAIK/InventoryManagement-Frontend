@@ -5,6 +5,7 @@ import InfoCard from '../common/InfoCard/InfoCard';
 import BadgeStatus from '../common/BadgeStatus/BadgeStatus';
 import HighlightedTable from '../common/HighlightedTable/HighLightedTable';
 import TableComponent from '../common/TableComponent/TableComponent';
+import LoadingSpinner from '../common/LoadingSpinner/LoadingSpinner';
 
 
 
@@ -23,7 +24,7 @@ const TransactionsPage = ({navigate}) => {
     } catch (err) {
           if(err.response.data.message === 'Invalid Token' || err.response.status === '400' || err.response.status == '401' || err.response.status === '403'){
       alert("Token Expired Please Login Again!");
-      navigate('/login');
+      navigate('/logout');
     }
     else{
       console.error('Error fetching transactions:', err);
@@ -33,9 +34,7 @@ const TransactionsPage = ({navigate}) => {
 
   return (
     isLoading ? 
-    <div className=' mt-5 d-flex justify-content-center align-items-center'>
-    <div class="text-center spinner-border" role="status"></div> 
-    </div>
+    <LoadingSpinner />
    :
    <div style={{background:'linear-gradient(to right top, #6ba0f6, #0c52bb)'}}>
     <div className="container-fluid  pt-4 transactions-page">

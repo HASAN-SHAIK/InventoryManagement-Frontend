@@ -9,25 +9,36 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
   const userDetails = useSelector((state) => state.user.userDetails);
   
-  useEffect(() => {
+useEffect(() => {
+  (async () => {
     try {
-      const getCategories = async () => {
-        const res = await api.get('/orders/getcategories');
-        setCategories(res.data);
-      };
+      const res = await api.get('/orders/getcategories');
+      setCategories(res.data);
+
+      // Remove 'personal' if not admin
       if (userDetails.role !== 'admin') {
-        setSaleMethods(saleMethods.filter((method) => method !== 'personal'));
+        setSaleMethods((prev) => prev.filter((method) => method !== 'personal'));
       }
-      getCategories();
     } catch (err) {
-      if (err.response && ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403)) {
-        alert("Token Expired Please Login Again!");
-        navigate('/login');
+      const message = err?.response?.data?.message;
+      const status = err?.response?.status || err?.status;
+
+      if (
+        message === 'Invalid Token' ||
+        message === 'Access Denied' ||
+        status === 400 ||
+        status === 401 ||
+        status === 403
+      ) {
+        alert("Token Expired or Access Denied. Please Login Again!");
+        navigate('/logout');
       } else {
-        console.log(err);
+        console.error("Failed to load categories:", err);
       }
     }
-  }, []);
+  })();
+}, []);
+
 
   const [transactionType, setTransactionType] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -74,7 +85,7 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
     } catch (err) {
       if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
         alert("Token Expired Please Login Again!");
-        navigate('/login');
+        navigate('/logout');
       } else {
         console.log(err);
       }
@@ -94,6 +105,40 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
     calculateTotal(updated);
   };
 
+  const handlePurchaseProductSearch = async (text, index) => {
+  if (text.length < 2) return;
+  try {
+    const response = await api.get(`/products/search?name=${text}`);
+    const updated = [...products];
+    updated[index].suggestions = response.data.products;
+    setProducts(updated);
+  } catch (err) {
+    if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
+      alert("Token Expired Please Login Again!");
+      navigate('/logout');
+    } else {
+      console.log(err);
+    }
+  }
+};
+
+const handlePurchaseProductSelect = (product, index) => {
+  const updated = [...products];
+  updated[index] = {
+    ...updated[index],
+    product_name: product.name,
+    company: product.company,
+    quantity: 1,
+    actual_price: product.actual_price,
+    selling_price: product.selling_price,
+    category: product.category,
+    time_for_delivery: '',
+    suggestions: [],
+  };
+  setProducts(updated);
+  calculateTotal(updated);
+};
+
   const handleQuantityChange = (value, index) => {
     const updated = [...products];
     updated[index].quantity = value;
@@ -107,6 +152,7 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
     setProducts(updated);
     calculateTotal(updated);
   };
+  
 
   const calculateTotal = (updatedProducts = products) => {
     if (transactionType === 'sale') {
@@ -162,7 +208,7 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
     } catch (err) {
       if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
         alert("Token Expired Please Login Again!");
-        navigate('/login');
+        navigate('/logout');
       } else {
         alert("Please Enter valid Products/Details!");
         console.log(err);
@@ -170,8 +216,6 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
     }
   };
   
-  // if (!userDetails) return <div className="text-center p-5"><div className="spinner-border"></div></div>;
-  // const { user_name, id, role } = userDetails;
 
   return (
     <div className="container mt-4 p-5 v-100">
@@ -266,41 +310,66 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
         </div>
       ))}
 
-      {transactionType === 'purchase' && products.map((p, index) => (
-        <div className="row mb-2" key={index}>
-          {['product_name', 'company', 'quantity', 'actual_price', 'selling_price', 'category', 'time_for_delivery'].map((field) => (
-            <div className="col" key={field}>
-              {field === 'category' ?
-                <>
-                  <input
-                    list='categories-list'
-                    className='form-control'
-                    id='category'
-                    name='category'
-                    onChange={(e) => handlePurchaseFieldChange(e.target.value, index, 'category')}
-                  />
-                  <datalist id='categories-list'>
-                    {
-                      categories.data && categories.data.map((cat, idx) => (
-                        <option key={idx} value={cat.category} />
-                      ))
-                    }
-                  </datalist>
-                </>
-                :
-                <input
-                  className="form-control"
-                  placeholder={field.replace(/_/g, ' ')}
-                  value={p[field]}
-                  onChange={(e) => handlePurchaseFieldChange(e.target.value, index, field)}
-                />}
-            </div>
-          ))}
-          <div className="col-1 d-flex align-items-center">
-            <button className="btn btn-danger btn-sm" onClick={() => removeProductRow(index)}>×</button>
-          </div>
-        </div>
-      ))}
+  {transactionType === 'purchase' && products.map((p, index) => (
+  <div className="row mb-2" key={index}>
+    {['product_name', 'company', 'quantity', 'actual_price', 'selling_price', 'category', 'time_for_delivery'].map((field) => (
+      <div className="col" key={field}>
+        {field === 'product_name' ? (
+          <>
+            <input
+              className="form-control"
+              placeholder="Product Name"
+              value={p.product_name}
+              onChange={(e) => {
+                handlePurchaseFieldChange(e.target.value, index, 'product_name');
+                handlePurchaseProductSearch(e.target.value, index);
+              }}
+            />
+            {p.suggestions?.length > 0 && (
+              <ul className="list-group">
+                {p.suggestions.map((s, i) => (
+                  <li
+                    key={i}
+                    className="list-group-item list-group-item-action"
+                    onClick={() => handlePurchaseProductSelect(s, index)}
+                  >
+                    {s.name} - {s.company} (₹{s.actual_price})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        ) : field === 'category' ? (
+          <>
+            <input
+              list="categories-list"
+              className="form-control"
+              placeholder="Category"
+              value={p.category}
+              onChange={(e) => handlePurchaseFieldChange(e.target.value, index, 'category')}
+            />
+            <datalist id="categories-list">
+              {categories.data && categories.data.map((cat, idx) => (
+                <option key={idx} value={cat.category} />
+              ))}
+            </datalist>
+          </>
+        ) : (
+          <input
+            className="form-control"
+            placeholder={field.replace(/_/g, ' ')}
+            value={p[field]}
+            onChange={(e) => handlePurchaseFieldChange(e.target.value, index, field)}
+          />
+        )}
+      </div>
+    ))}
+    <div className="col-1 d-flex align-items-center">
+      <button className="btn btn-danger btn-sm" onClick={() => removeProductRow(index)}>×</button>
+    </div>
+  </div>
+))}
+
 
       {transactionType && transactionType !== 'personal' && (
         <div className="mb-3">
