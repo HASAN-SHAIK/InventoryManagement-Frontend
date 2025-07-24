@@ -75,11 +75,6 @@ const OrdersPage = ({ userRole, navigate }) => {
     order_id: id,
     type: type
   });
-  // const Id = id +"payment"
-  // const element = document.getElementById(Id);
-  // element.innerHTML = 'Done';
-  // element.classList.remove('btn-outline-success');
-  // element.classList.add('btn-success');
   alert("Marked as paid");
   setOrderUpdateFlag(1);
 }
