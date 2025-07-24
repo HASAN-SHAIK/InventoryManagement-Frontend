@@ -5,7 +5,7 @@ import PopUp from '../components/common/PopUp/PopUp';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearOrderDetails, setOrderDetails } from '../store/orderSlice';
 
-const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
+const CreateOrderPage = () => {
   const [categories, setCategories] = useState([]);
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
   const userDetails = useSelector((state) => state.user.userDetails);
@@ -14,10 +14,10 @@ const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
   const [products, setProducts] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [personalAmount, setPersonalAmount] = useState('');
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const orderDetails = useSelector((state) => state.order.orderDetails);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 useEffect(() => {
   (async () => {
     try {
@@ -194,9 +194,11 @@ const handlePurchaseProductSelect = (product, index) => {
   };
 
   const handleSubmit = async (key) => {
+    setIsLoading(true);
     if(key === 0) {
       navigate('/orders');
       dispatch(clearOrderDetails());
+      setIsLoading(false);
       return;
     }
     if (!transactionType) return alert('Select transaction type');
@@ -251,18 +253,15 @@ const handlePurchaseProductSelect = (product, index) => {
         console.log(err);
       }
     }
+    finally { 
+      setIsLoading(false);
+    }
   };
   
 
   return (
     <div className="container mt-4 p-5 v-100">
       <h3 className='display-5 text-center b-2'>Create New Order</h3>
-      <PopUp
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={title}
-        message={message}
-      />
       <div className="mb-3">
         {saleMethods && saleMethods.map(type => (
           <label key={type} className="me-3">
@@ -432,8 +431,8 @@ const handlePurchaseProductSelect = (product, index) => {
         </div>
       )}
 
-      <button className="btn btn-danger m-1" onClick={()=>handleSubmit(0)}>Cancel</button>
-      <button className="btn btn-primary m-1" onClick={()=>handleSubmit(1)}>Create Transaction</button>
+      <button className="btn btn-danger m-1" onClick={()=>handleSubmit(0)}>{ isLoading ? <div class="spinner-border spinner-style text-light" role="status"></div> : `Cancel`}</button>
+      <button className="btn btn-primary m-1" onClick={()=>handleSubmit(1)}>{ isLoading ? <div class="spinner-border spinner-style text-light" role="status"></div> : `Create Order`}</button>
     </div>
   );
 };
