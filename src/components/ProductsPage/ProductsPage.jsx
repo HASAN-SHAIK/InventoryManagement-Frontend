@@ -5,13 +5,15 @@ import api from '../../utils/axios';
 import { Modal } from 'bootstrap';
 import AddProductModalComponent from './AddModalComponent/AddProductModalComponent';
 import LoadingSpinner from '../common/LoadingSpinner/LoadingSpinner';
+import { useSelector } from 'react-redux';
 
-const ProductsPage = ({ userRole, navigate }) => {
+const ProductsPage = ({ navigate }) => {
 //Modal data
  const [showEditModal, setShowEditModal] = useState(false);
  const [selectedOrder, setSelectedOrder] = useState(null);
  const [productUpdateFlag, setProductUpdateFlag] = useState(false);
-const [formData, setFormData] = useState({
+ const userDetails = useSelector((state) => state.user.userDetails);
+ const [formData, setFormData] = useState({
   product_name: '',
     company: '',
     selling_price: '',
@@ -60,6 +62,9 @@ const [formData, setFormData] = useState({
       alert("Token Expired Please Login Again!");
       navigate('/logout');
       }
+      else if(err.status === 403){
+      alert("You should be admin");     
+      }
       else{
       alert("Issue while adding please try later")
       console.error('Error adding product:', err);
@@ -92,6 +97,7 @@ const [formData, setFormData] = useState({
     try{
     const response = await api.get('/products');
     setProducts(response.data);
+    console.log("SUerDetails",userDetails.role)
     }
     catch(err){
      if((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
@@ -127,9 +133,9 @@ const [formData, setFormData] = useState({
       <LoadingSpinner />
      :
     <div className="w-90 container-fluid pt-4">
-      <div className="d-flex float-end">
+      {userDetails.role === 'admin' && <div className="d-flex float-end">
         <div><button className={`btn btn-success form-control `} onClick={() => handleOpenModal(true)}>Add Product</button></div>
-      </div>
+      </div>}
 
       <div className="d-flex mb-3 gap-3">
         <input className="w-60 form-control" placeholder="Search Products. . . ." value={searchTerm} onChange={handleSearch} />
@@ -142,13 +148,13 @@ const [formData, setFormData] = useState({
       </div>
 
       <TableComponent
-        columns={['Name', 'Company', 'Selling_Price', ...(userRole === 'admin' ? ['Actual_Price'] : []), 'Quantity', ...(userRole === 'admin' ? ['Edit'] : [])]}
+        columns={['Name', 'Company', 'Selling_Price', ...(userDetails.role === 'admin' ? ['Actual_Price'] : []), 'Quantity', ...(userDetails.role === 'admin' ? ['Edit'] : [])]}
         data={filteredProducts}
-        isAdmin={userRole === 'admin'}
+        isAdmin={userDetails.role === 'admin'}
         setProductUpdateFlag={setProductUpdateFlag}
       />
 
-        <AddProductModalComponent navigate={navigate} setProductUpdateFlag={setProductUpdateFlag}  modalId="addProductModal" title="Add Product" fields={productFields} formData={formData} onChange={handleChange} onSubmit={handleSubmit} onClose={() => setShowModal(false)} onProductAdded={fetchProducts} />
+        {userDetails.role === 'admin' && <AddProductModalComponent navigate={navigate} setProductUpdateFlag={setProductUpdateFlag}  modalId="addProductModal" title="Add Product" fields={productFields} formData={formData} onChange={handleChange} onSubmit={handleSubmit} onClose={() => setShowModal(false)} onProductAdded={fetchProducts} />}
     </div>
   );
 };

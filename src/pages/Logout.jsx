@@ -6,6 +6,7 @@ import { clearUserDetails } from '../store/userSlice';
 import Cookies from 'js-cookie';
 import api from '../utils/axios';
 import LoadingSpinner from '../components/common/LoadingSpinner/LoadingSpinner';
+import { clearOrderDetails } from '../store/orderSlice';
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Logout = () => {
     try{
       const response = await api.post('/auth/logout');
       dispatch(clearUserDetails());
+      dispatch(clearOrderDetails());
       Cookies.remove('token');
     }
     catch (error) {

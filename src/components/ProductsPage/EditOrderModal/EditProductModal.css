@@ -1,31 +1,41 @@
-.product-form-label{
-    font-weight: bolder;
-    font-size: larger;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: rgb(34, 112, 255);
+.modal-overlay.edit-product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 10, 0.8);
+  z-index: 1050;
+  backdrop-filter: blur(4px);
 }
 
-.product-form-input{
-    width: 400px !important;
-    border: 2px rgb(110, 110, 167);
-    border-radius: 10%;
-    text-align: center;
-    font-size: larger;
-    background-color: aliceblue;
-    padding: 1%;
-}
-
-.edit-product-modal{
-    /* position: fixed; */
-    overflow: scroll;
-    top: 100px !important;
-    left: 25% !important;
-    width: 50% !important;
-    min-height: 80% !important;
-    background:linear-gradient(rgb(216, 216, 245),rgb(234, 220, 220), rgb(243, 243, 199),rgb(194, 234, 194),rgb(255, 238, 207), rgb(249, 196, 249));
-    display: flex;
-    justify-content: center;
+.modal-content{
+    display: flex; 
     align-items: center;
-    z-index: 5000;
-    /* border-radius: 10px 10px 10px 10px !important; */
+    justify-content: center;
+    max-width: 500px;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 1.5rem !important;
+    background: #182c60 !important;
+    border: 1px solid #00ffc8 !important;
+}
+
+.neon-input {
+  border: 2px solid #182c60;
+  background-color: #1a1a1a;
+  color: #182c60;
+  box-shadow: 0 0 5px #182c60;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
+.neon-input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #182c60, 0 0 20px #182c60;
+  background-color: #182c60;
+}
+
+.w-45 {
+  width: 45%;
 }

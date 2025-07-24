@@ -2,23 +2,51 @@ import React, { useEffect, useState } from 'react';
 import api from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import PopUp from '../components/common/PopUp/PopUp';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearOrderDetails, setOrderDetails } from '../store/orderSlice';
 
 const CreateOrderPage = ({ setIsModalOpen, isModalOpen, navigate }) => {
   const [categories, setCategories] = useState([]);
   const [saleMethods, setSaleMethods] = useState(['sale', 'purchase', 'personal']);
   const userDetails = useSelector((state) => state.user.userDetails);
-  
+  const [transactionType, setTransactionType] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [products, setProducts] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [personalAmount, setPersonalAmount] = useState('');
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const orderDetails = useSelector((state) => state.order.orderDetails);
+  const dispatch = useDispatch();
 useEffect(() => {
   (async () => {
     try {
-      const res = await api.get('/orders/getcategories');
-      setCategories(res.data);
-
-      // Remove 'personal' if not admin
-      if (userDetails.role !== 'admin') {
+            // Remove 'personal' if not admin
+      if (!orderDetails && userDetails.role !== 'admin') {
         setSaleMethods((prev) => prev.filter((method) => method !== 'personal'));
       }
+      else if (orderDetails) {
+        setSaleMethods((prev) => prev.filter((method) => method === 'sale'));
+      }
+      if(orderDetails){
+        const reconstructedProducts = orderDetails.items.map(item => {
+          const clonedItem = JSON.parse(JSON.stringify(item)); // deep clone
+
+          return {
+            ...clonedItem,
+            id: clonedItem.product_id || clonedItem.id,
+            suggestions: [],
+          };
+        });
+        setProducts(reconstructedProducts);
+        setTransactionType(orderDetails.type);
+        setTotalAmount(parseFloat(orderDetails.total_price));
+        setPaymentMethod(orderDetails.payment);
+        setPersonalAmount(res.data.order.personal_amount || '');
+      }
+      const res = await api.get('/orders/getcategories');
+      setCategories(res.data);
+      
     } catch (err) {
       const message = err?.response?.data?.message;
       const status = err?.response?.status || err?.status;
@@ -38,15 +66,12 @@ useEffect(() => {
     }
   })();
 }, []);
+useEffect(() => {
+  dispatch(clearOrderDetails()); // Clear order details on mount
+}, [navigate]);
 
 
-  const [transactionType, setTransactionType] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [products, setProducts] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [personalAmount, setPersonalAmount] = useState('');
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
+
 
   const handleTransactionTypeChange = (e) => {
     setTransactionType(e.target.value);
@@ -168,7 +193,12 @@ const handlePurchaseProductSelect = (product, index) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (key) => {
+    if(key === 0) {
+      navigate('/orders');
+      dispatch(clearOrderDetails());
+      return;
+    }
     if (!transactionType) return alert('Select transaction type');
 
     if ((transactionType === 'sale' || transactionType === 'personal') && !paymentMethod)
@@ -195,13 +225,20 @@ const handlePurchaseProductSelect = (product, index) => {
       total_amount: transactionType === 'personal' ? parseFloat(personalAmount) : totalAmount,
       payment_method: paymentMethod,
       products: products.map(p => {
-        if (transactionType === 'sale') return { product_id: p.id, quantity: p.quantity };
+        if (transactionType === 'sale') return { product_id: p.id, quantity: p.quantity, selling_price: p.selling_price };
         if (transactionType === 'purchase') return { ...p };
         return {};
       })
     };
 
     try {
+      if(orderDetails) {
+        payload.order_id = orderDetails.id; // Include order ID for updates
+        await api.put(`/orders/${orderDetails.id}`, payload);
+        dispatch(clearOrderDetails()); // Dispatch updated order details to Redux store
+        navigate('/orders');
+        return alert('Order Updated!!');
+      }
       await api.post('/orders', payload);
       alert('Order Placed!!');
       navigate('/orders');
@@ -219,7 +256,7 @@ const handlePurchaseProductSelect = (product, index) => {
 
   return (
     <div className="container mt-4 p-5 v-100">
-      <h3 className='display-5 text-center'>Create New Transaction</h3>
+      <h3 className='display-5 text-center b-2'>Create New Order</h3>
       <PopUp
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -395,7 +432,8 @@ const handlePurchaseProductSelect = (product, index) => {
         </div>
       )}
 
-      <button className="btn btn-primary" onClick={handleSubmit}>Create Transaction</button>
+      <button className="btn btn-danger m-1" onClick={()=>handleSubmit(0)}>Cancel</button>
+      <button className="btn btn-primary m-1" onClick={()=>handleSubmit(1)}>Create Transaction</button>
     </div>
   );
 };

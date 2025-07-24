@@ -62,7 +62,7 @@ function App() {
           path="/neworder"
           element={
             <ProtectedRoute>
-              <CreateOrderPage navigate={navigate} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+              <CreateOrderPage  />
             </ProtectedRoute>
           }
         />
