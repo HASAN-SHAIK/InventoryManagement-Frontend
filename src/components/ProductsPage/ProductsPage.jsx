@@ -58,7 +58,7 @@ const ProductsPage = ({ navigate }) => {
     setProductUpdateFlag(true)
 
     } catch (err) {
-      if(err.response.data.message === 'Invalid Token' || err.response.status === '400' || err.response.status == '401' || err.response.status === '403'){
+      if(err.response.data.message === 'Invalid Token' || err.response.status == '401' || err.response.status === '403'){
       alert("Token Expired Please Login Again!");
       navigate('/logout');
       }
@@ -97,7 +97,6 @@ const ProductsPage = ({ navigate }) => {
     try{
     const response = await api.get('/products');
     setProducts(response.data);
-    console.log("SUerDetails",userDetails.role)
     }
     catch(err){
      if((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status == 401 || err.response.status === 403){
