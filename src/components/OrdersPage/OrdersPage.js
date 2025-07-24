@@ -4,6 +4,8 @@ import './OrdersPage.css'; // optional custom styles
 import TableComponent from '../common/TableComponent/TableComponent';
 import EditOrderModal from './EditOrderModal/EditOrderModal';
 import LoadingSpinner from '../common/LoadingSpinner/LoadingSpinner';
+import { setOrderDetails } from '../../store/orderSlice';
+import { useDispatch } from 'react-redux';
 const OrdersPage = ({ userRole, navigate }) => {
  const columns = ["OrderId", "Products", "Price", "TotalPrice", "ByUser", "Date", "Edit"]
  const [orders, setOrders] = useState([]);
@@ -15,11 +17,16 @@ const OrdersPage = ({ userRole, navigate }) => {
  const [selectedOrder, setSelectedOrder] = useState(null);
  const [orderId, setOrderId] = useState(null);
  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
  
 
  const handleEditClick = (order) => {
-   setSelectedOrder(order);
-   setShowEditModal(true);
+  // Assuming you have a Redux action to set order details
+   dispatch(setOrderDetails(order));
+   navigate('/neworder')
+  //  console.log(order)
+  //  setSelectedOrder(order);
+  //  setShowEditModal(true);
  };
 
  const handleCloseModal = () => {
@@ -183,7 +190,7 @@ order.type === 'personal' ? null : <tr key={idx}>
 <td>{order.id}</td>
 <td className='fw-bold'>
                  {order.items.length>0 ? order.items.map(p => (
-<div>{p.name} x {p.quantity}</div>
+<div>{p.product_name} x {p.quantity}</div>
                  )) : <div className='text-success'>Purchased Items</div>}
 </td>
 <td>
