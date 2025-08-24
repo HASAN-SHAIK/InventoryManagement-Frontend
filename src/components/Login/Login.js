@@ -39,6 +39,7 @@ const Login = ( ) => {
     <div className="login-wrapper">
       <div className="login-container">
         <h2>Hasan Inventory</h2>
+        <p className='disabled'>Use password 'admin'</p>
       <div className="floating-shape logincube green"></div>
       <div className="floating-shape logincircle red"></div>
         {error && <div className="alert text-danger text-center">{error}</div>}
