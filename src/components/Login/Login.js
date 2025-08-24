@@ -51,13 +51,13 @@ const Login = ( ) => {
             value={form.email}
             onChange={handleChange}
             required
-            placeholder="you@example.com"
+            placeholder="admin@example.com"
           />
 
           <label className='form-label'>Password</label>
           <input
             className='form-control loginpasswordinput'
-            name="password"
+            name="admin"
             type="password"
             value={form.password}
             onChange={handleChange}
