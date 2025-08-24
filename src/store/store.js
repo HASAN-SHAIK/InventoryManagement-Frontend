@@ -7,7 +7,7 @@ import orderReducer from './orderSlice';
 import expireReducer from "redux-persist-transform-expire";
 
 const expireTransform = expireReducer("user", {
-  expireSeconds: process.env.TOKEN_EXPIRY * 1000,
+  expireSeconds: process.env.TOKEN_EXPIRY,
   expiredState: {
     userDetails: null
   },
