@@ -58,7 +58,7 @@ const Login = ( ) => {
           <label className='form-label'>Password</label>
           <input
             className='form-control loginpasswordinput'
-            name="admin"
+            name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
