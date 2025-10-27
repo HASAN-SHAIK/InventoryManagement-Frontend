@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import userReducer from './userSlice'; 
 import orderReducer from './orderSlice'; 
 import expireReducer from "redux-persist-transform-expire";
+import { getToken, isTokenValid } from '../utils/auth';
 
 const expireTransform = expireReducer("user", {
   expireSeconds: process.env.TOKEN_EXPIRY,
@@ -31,5 +32,13 @@ export const store = configureStore({
   reducer: persistedReducer,
 });
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  const token = getToken();
+  if (!isTokenValid(token)) {
+    // purge persisted state so app doesn't auto-login with expired/invalid data
+    persistor.purge();
+  }
+});
+
+export default store;
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PopUp from '../components/common/PopUp/PopUp';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearOrderDetails, setOrderDetails } from '../store/orderSlice';
@@ -16,6 +16,8 @@ const CreateOrderPage = () => {
   const [personalAmount, setPersonalAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const orderDetails = useSelector((state) => state.order.orderDetails);
+  const [couponCode, setCouponCode] = useState('');
+  const [discount, setDiscount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 useEffect(() => {
@@ -31,18 +33,19 @@ useEffect(() => {
       if(orderDetails){
         const reconstructedProducts = orderDetails.items.map(item => {
           const clonedItem = JSON.parse(JSON.stringify(item)); // deep clone
-
           return {
             ...clonedItem,
             id: clonedItem.product_id || clonedItem.id,
             suggestions: [],
           };
         });
+        console.log("reconstructedProducts", orderDetails);
         setProducts(reconstructedProducts);
         setTransactionType(orderDetails.type);
         setTotalAmount(parseFloat(orderDetails.total_price));
         setPaymentMethod(orderDetails.payment);
-        setPersonalAmount(res.data.order.personal_amount || '');
+        // setPersonalAmount(res.data.order.personal_amount || '');
+        setCouponCode(orderDetails.couponcode || '');
       }
       const res = await api.get('/orders/getcategories');
       setCategories(res.data);
@@ -54,7 +57,6 @@ useEffect(() => {
       if (
         message === 'Invalid Token' ||
         message === 'Access Denied' ||
-        status === 400 ||
         status === 401 ||
         status === 403
       ) {
@@ -66,7 +68,9 @@ useEffect(() => {
     }
   })();
 }, []);
+  const location = useLocation();
 useEffect(() => {
+  if(location.pathname !== '/neworder')
   dispatch(clearOrderDetails()); // Clear order details on mount
 }, [navigate]);
 
@@ -201,6 +205,7 @@ const handlePurchaseProductSelect = (product, index) => {
       setIsLoading(false);
       return;
     }
+    
     if (!transactionType) return alert('Select transaction type');
 
     if ((transactionType === 'sale' || transactionType === 'personal') && !paymentMethod)
@@ -230,22 +235,26 @@ const handlePurchaseProductSelect = (product, index) => {
         if (transactionType === 'sale') return { product_id: p.id, quantity: p.quantity, selling_price: p.selling_price };
         if (transactionType === 'purchase') return { ...p };
         return {};
-      })
+      }),
+      coupon_code: couponCode,
     };
 
     try {
       if(orderDetails) {
+        console.log("came here");
         payload.order_id = orderDetails.id; // Include order ID for updates
         await api.put(`/orders/${orderDetails.id}`, payload);
         dispatch(clearOrderDetails()); // Dispatch updated order details to Redux store
         navigate('/orders');
         return alert('Order Updated!!');
       }
+      else{
       await api.post('/orders', payload);
       alert('Order Placed!!');
       navigate('/orders');
-    } catch (err) {
-      if ((err.response.data && err.response.data.message === 'Invalid Token') || err.status === 400 || err.response.status === 401 || err.response.status === 403) {
+    } }
+    catch (err) {
+      if ((err.response.data && err.response.data.message === 'Invalid Token')  || err.response.status === 401 || err.response.status === 403) {
         alert("Token Expired Please Login Again!");
         navigate('/logout');
       } else {
@@ -257,7 +266,23 @@ const handlePurchaseProductSelect = (product, index) => {
       setIsLoading(false);
     }
   };
-  
+  const applyCoupon = async () => {
+  try {
+    const res = await api.post("/orders/apply-coupon", {
+      coupon_code: couponCode,
+      orderTotal: totalAmount,
+      order_id: orderDetails.id
+    });
+
+    if (res.data.success) {
+      setDiscount(res.data.discount);
+      setTotalAmount(res.data.newTotal);
+    }
+  } catch (err) {
+    alert(err.response.data.error || "Failed to apply coupon");
+  }
+};
+
 
   return (
     <div className="container mt-4 p-5 v-100">
@@ -430,9 +455,27 @@ const handlePurchaseProductSelect = (product, index) => {
           <strong>Total: ₹{totalAmount.toFixed(2)}</strong>
         </div>
       )}
+      { totalAmount >0 && <div className="coupon-section">
+      <div className='row m-1'>
+        <input
+          type="text"
+          className="col-6 mr-5"
+          placeholder="Enter coupon code"
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+        />
+        <button className="btn btn-primary col-2" onClick={applyCoupon}>Apply</button>
+      </div>
+        {discount > 0 && (
+          <div className="alert alert-success mt-2">
+            Coupon applied! You saved ₹{discount}
+          </div>
+        )}
+      </div>
+      }
 
       <button className="btn btn-danger m-1" onClick={()=>handleSubmit(0)}>{ isLoading ? <div class="spinner-border spinner-style text-light" role="status"></div> : `Cancel`}</button>
-      <button className="btn btn-primary m-1" onClick={()=>handleSubmit(1)}>{ isLoading ? <div class="spinner-border spinner-style text-light" role="status"></div> : `Create Order`}</button>
+      <button className="btn btn-primary m-1" onClick={()=>handleSubmit(1)}>{ isLoading ? <div class="spinner-border spinner-style text-light" role="status"></div> : orderDetails? 'Update Order' : 'Create Order'}</button>
     </div>
   );
 };
