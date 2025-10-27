@@ -5,13 +5,15 @@ import ProtectedRoute from './components/common/protectedRoute';
 import { ThemeProvider } from './ThemeContext';
 import Orders from './pages/Orders';
 import Navbar from './components/common/Navbar/Navbar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductsPage from './components/ProductsPage/ProductsPage';
 import Transactions from './pages/Transactions';
 import CreateOrderPage from './pages/CreateOrderPage';
 import './App.css';
-import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import { useDispatch, useSelector } from 'react-redux';
 import Logout from './pages/Logout';
+import { clearUserDetails } from './store/userSlice';
 
 function App() {
   const location = window.location.pathname;
@@ -19,7 +21,15 @@ function App() {
   const userDetails = useSelector((state) => state.user.userDetails);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    const token = Cookies.get('token');
+    
+    // if (!token) {
+    //   dispatch(clearUserDetails());
+    // } 
+  }, []);
   return (
     <>
       {userDetails && !authPages.includes(location) && <div className='sticky-top'><Navbar user_name={userDetails && userDetails.user_name} /></div>}
