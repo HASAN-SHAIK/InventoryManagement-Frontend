@@ -14,7 +14,7 @@ const PrivateRoute = () => {
     // also clear persisted raw token keys to avoid immediate rehydration
     try { localStorage.removeItem('token'); } catch {}
     try { localStorage.removeItem('persist:root'); } catch {}
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
       localStorage.removeItem('token');
     } catch (e) {}
     // stop the request and force login page
-    window.location.replace('/login');
+    window.location.replace('/');
     return Promise.reject(new axios.Cancel('Token expired or invalid'));
   }
 

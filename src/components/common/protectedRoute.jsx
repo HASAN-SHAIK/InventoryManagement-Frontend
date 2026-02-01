@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (isAuth === null) return <LoadingSpinner />;
-  if (!isAuth) return <Navigate to="/login" />;
+  if (!isAuth) return <Navigate to="/" />;
   return children;
 };
 
