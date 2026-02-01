@@ -25,7 +25,7 @@ const Logout = () => {
        console.error('Logout error:', error);
     }
     finally {
-      navigate('/login');
+      navigate('/');
     }
   }
     logoutUser();

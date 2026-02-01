@@ -56,7 +56,7 @@ const DashboardOverview = ({navigate}) => {
     catch(err){
       if(err.response.data.message === "Invalid Token" || err.response.status === 400){
         alert("Token Expired Please Login Again!!");
-        navigate('/login');
+        navigate('/');
       }
       console.log(err)
     }
