@@ -38,7 +38,7 @@ const Login = ( ) => {
   return (
     <div className="login-wrapper">
       <div className="login-container">
-        <h2>Hasan Inventory</h2>
+        <h2>Ameena Automobiles</h2>
         <p className='disabled'>Use password 'admin'</p>
       <div className="floating-shape logincube green"></div>
       <div className="floating-shape logincircle red"></div>
